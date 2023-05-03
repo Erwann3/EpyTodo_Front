@@ -12,7 +12,7 @@ export async function register(email, password, firstname, name) {
     if (response.status !== 200) {
         throw new Error(response.data.msg);
     }
-    return response;
+    return response.data.token;
 }
 
 export async function login(email, password) {
@@ -25,5 +25,5 @@ export async function login(email, password) {
         console.log(response.data.msg);
         throw new Error(response.data.msg);
     }
-    return response;
+    return response.data.token;
 }

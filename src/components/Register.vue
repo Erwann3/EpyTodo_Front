@@ -2,6 +2,9 @@
     <div class="mb-3" v-if="errorMessage">
         <span class="text-danger">{{ errorMessage }}</span>
     </div>
+    <div class="mb-3" v-if="successMessage">
+        <span class="text-success">{{ successMessage }}</span>
+    </div>
     <div>
         <h2>Register</h2>
         <form @submit.prevent="onSubmit">
@@ -41,14 +44,18 @@ export default {
             password: '',
             firstname: '',
             name: '',
-            errorMessage: ''
+            errorMessage: '',
+            successMessage: ''
         };
     },
     methods: {
         async onSubmit() {
             try {
                 // todo : do something with the returned jwt token
-                await register(this.email, this.password, this.firstname, this.name);
+                const token = await register(this.email, this.password, this.firstname, this.name);
+                if (token !== undefined) {
+                    this.successMessage = "Successfully registred";
+                }
             } catch (error) {
                 this.errorMessage = error.response.data.msg;
             }
