@@ -23,12 +23,14 @@
 <script>
 import { useStore } from 'vuex';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { login } from '@/services/authService';
 
 export default {
     name: 'UserLogin',
     setup() {
         const store = useStore();
+        const router = useRouter();
         const email = ref('');
         const password = ref('');
         const errorMessage = ref('');
@@ -37,6 +39,7 @@ export default {
             try {
                 const token = await login(email.value, password.value);
                 store.dispatch('setToken', token);
+                router.push('/');
             } catch (error) {
                 errorMessage.value = error.response.data.msg;
             }

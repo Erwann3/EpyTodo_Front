@@ -34,32 +34,45 @@
 </template>  
 
 <script>
+import { useStore } from 'vuex';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { register } from '@/services/authService';
 
 export default {
     name: 'UserRegister',
-    data() {
-        return {
-            email: '',
-            password: '',
-            firstname: '',
-            name: '',
-            errorMessage: '',
-            successMessage: ''
-        };
-    },
-    methods: {
-        async onSubmit() {
+    setup() {
+        const store = useStore();
+        const router = useRouter();
+        const email = ref('');
+        const password = ref('');
+        const firstname = ref('');
+        const name = ref('');
+        const errorMessage = ref('');
+        const successMessage = ref('');
+
+        const onSubmit = async () => {
             try {
-                // todo : do something with the returned jwt token
-                const token = await register(this.email, this.password, this.firstname, this.name);
+                const token = await register(email.value, password.value, firstname.value, name.value);
                 if (token !== undefined) {
-                    this.successMessage = "Successfully registred";
+                    successMessage.value = "Successfully registered";
+                    store.dispatch('setToken', token);
+                    router.push('/');
                 }
             } catch (error) {
-                this.errorMessage = error.response.data.msg;
+                errorMessage.value = error.response.data.msg;
             }
         }
+
+        return {
+            email,
+            password,
+            firstname,
+            name,
+            errorMessage,
+            successMessage,
+            onSubmit
+        };
     }
 };
 </script>
