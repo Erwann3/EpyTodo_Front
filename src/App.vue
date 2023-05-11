@@ -5,11 +5,14 @@
                 <a class="navbar-brand" href="#">EpiTodo</a>
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="!token">
                             <router-link to="/login" class="nav-link">Login</router-link>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="!token">
                             <router-link to="/register" class="nav-link">Register</router-link>
+                        </li>
+                        <li class="nav-item" v-if="token">
+                            <button @click="logout" class="btn btn-link nav-link">Logout</button>
                         </li>
                     </ul>
                 </div>
@@ -20,10 +23,26 @@
         </div>
     </div>
 </template>
-  
+
 <script>
+import { useStore } from 'vuex';
+import { computed } from 'vue';
+
 export default {
     name: 'App',
+    setup() {
+        const store = useStore();
+        const token = computed(() => store.state.token);
+
+        const logout = () => {
+            store.dispatch('clearToken');
+        };
+
+        return {
+            token,
+            logout
+        };
+    }
 };
 </script>
   

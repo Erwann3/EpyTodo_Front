@@ -21,26 +21,33 @@
 </template>
   
 <script>
+import { useStore } from 'vuex';
+import { ref } from 'vue';
 import { login } from '@/services/authService';
 
 export default {
     name: 'UserLogin',
-    data() {
-        return {
-            email: '',
-            password: '',
-            errorMessage: ''
-        };
-    },
-    methods: {
-        async onSubmit() {
+    setup() {
+        const store = useStore();
+        const email = ref('');
+        const password = ref('');
+        const errorMessage = ref('');
+
+        const onSubmit = async () => {
             try {
-                // todo : do something with the token returned by it
-                await login(this.email, this.password);
+                const token = await login(email.value, password.value);
+                store.dispatch('setToken', token);
             } catch (error) {
-                this.errorMessage = error.response.data.msg;
+                errorMessage.value = error.response.data.msg;
             }
-        }
+        };
+
+        return {
+            email,
+            password,
+            errorMessage,
+            onSubmit
+        };
     }
 };
 </script>
